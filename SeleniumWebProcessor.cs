@@ -12,7 +12,7 @@ namespace NuciWeb.Automation.Selenium
     /// Implements the <see cref="IWebProcessor"/> interface using the Selenium WebDriver to perform web automation tasks.
     /// </summary>
     /// <param name="driver">The Selenium WebDriver instance used to interact with the web browser.</param>
-    public sealed class SeleniumProcessor(IWebDriver driver) : WebProcessor, IWebProcessor
+    public sealed class SeleniumWebProcessor(IWebDriver driver) : WebProcessor, IWebProcessor
     {
         readonly IWebDriver driver = driver;
 
