@@ -1,0 +1,1 @@
+[![Build Status](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml)
