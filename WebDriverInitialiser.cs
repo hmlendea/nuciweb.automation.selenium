@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.IO;
 
 using OpenQA.Selenium;
@@ -12,6 +13,8 @@ namespace NuciWeb.Automation.Selenium
     /// </summary>
     public sealed class WebDriverInitialiser
     {
+        static readonly Size DefaultBrowserSize = new(1920, 1080);
+
         /// <summary>
         /// Initialises a web driver based on the available browser drivers on the system.
         /// If geckodriver is found, it will initialise a Firefox driver; otherwise,
@@ -75,6 +78,8 @@ namespace NuciWeb.Automation.Selenium
             };
 
             options.SetPreference("privacy.firstparty.isolate", false);
+            options.AddArgument($"--width={DefaultBrowserSize.Width}");
+            options.AddArgument($"--height={DefaultBrowserSize.Height}");
 
             if (!isDebugModeEnabled)
             {
@@ -97,7 +102,7 @@ namespace NuciWeb.Automation.Selenium
             FirefoxDriver driver = new(service, options, TimeSpan.FromSeconds(pageLoadTimeout));
 
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(pageLoadTimeout);
-            driver.Manage().Window.Maximize();
+            SetWindowSize(driver);
 
             return driver;
         }
@@ -141,13 +146,12 @@ namespace NuciWeb.Automation.Selenium
             options.AddArgument("--disable-translate");
             options.AddArgument("--disable-infobars");
             options.AddArgument("--disable-logging");
+            options.AddArgument($"--window-size={DefaultBrowserSize.Width},{DefaultBrowserSize.Height}");
 
             if (!isDebugModeEnabled)
             {
                 options.AddArgument("--headless");
                 options.AddArgument("--disable-gpu");
-                options.AddArgument("--window-size=1920,1080");
-                options.AddArgument("--start-maximized");
                 options.AddArgument("--blink-settings=imagesEnabled=false");
                 options.AddUserProfilePreference("profile.default_content_setting_values.images", 2);
             }
@@ -170,9 +174,15 @@ namespace NuciWeb.Automation.Selenium
             }
 
             webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(pageLoadTimeout);
-            webDriver.Manage().Window.Maximize();
+            SetWindowSize(webDriver);
 
             return webDriver;
+        }
+
+        static void SetWindowSize(IWebDriver driver)
+        {
+            driver.Manage().Window.Position = new Point(0, 0);
+            driver.Manage().Window.Size = DefaultBrowserSize;
         }
     }
 }
