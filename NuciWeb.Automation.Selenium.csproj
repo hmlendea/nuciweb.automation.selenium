@@ -13,11 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuciWeb" Version="4.0.0" />
+    <PackageReference Include="NuciWeb.Automation" Version="1.0.0" />
     <PackageReference Include="Selenium.Support" Version="4.5.1" />
     <PackageReference Include="Selenium.WebDriver" Version="4.5.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../nuciweb.automation/NuciWeb.Automation.csproj" />
   </ItemGroup>
 
 </Project>
