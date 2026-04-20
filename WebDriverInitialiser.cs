@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
-
+using NuciWeb.HTTP;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -135,6 +135,7 @@ namespace NuciWeb.Automation.Selenium
             bool isDebugModeEnabled = true,
             int pageLoadTimeout = 90)
         {
+            IUserAgentFetcher userAgentFetcher = new UserAgentFetcher();
             ChromeOptions options = new()
             {
                 PageLoadStrategy = PageLoadStrategy.None
@@ -147,6 +148,7 @@ namespace NuciWeb.Automation.Selenium
             options.AddArgument("--disable-infobars");
             options.AddArgument("--disable-logging");
             options.AddArgument($"--window-size={DefaultBrowserSize.Width},{DefaultBrowserSize.Height}");
+            options.AddArgument($"--user-agent={userAgentFetcher.GetUserAgent().Result}");
 
             if (!isDebugModeEnabled)
             {
@@ -161,17 +163,6 @@ namespace NuciWeb.Automation.Selenium
             service.HideCommandPromptWindow = true;
 
             ChromeDriver webDriver = new(service, options, TimeSpan.FromSeconds(pageLoadTimeout));
-            IJavaScriptExecutor scriptExecutor = webDriver;
-            string userAgent = (string)scriptExecutor.ExecuteScript("return navigator.userAgent;");
-
-            if (userAgent.Contains("Headless"))
-            {
-                userAgent = userAgent.Replace("Headless", "");
-                options.AddArgument($"--user-agent={userAgent}");
-
-                webDriver.Quit();
-                webDriver = new ChromeDriver(service, options);
-            }
 
             webDriver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(pageLoadTimeout);
             SetWindowSize(webDriver);
