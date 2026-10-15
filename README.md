@@ -96,3 +96,7 @@ When debug mode is disabled, the initialiser also enables headless execution and
 ## License
 
 This project is licensed under the `GNU General Public License v3.0` or later. See [LICENSE](./LICENSE) for details.
+
+## 🛡️ Privacy and Data
+
+See [PRIVACY.md](./PRIVACY.md) for detailed information about how this project handles personal data and privacy practices.
