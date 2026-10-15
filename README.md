@@ -104,3 +104,19 @@ See [PRIVACY.md](./PRIVACY.md) for detailed information about how this project h
 ## 📜 Code of Conduct
 
 See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for the standards of conduct expected in all project spaces.
+
+## 🤝 Contributing
+
+You are welcome to submit any suggestion, feedback, or modification to this project.
+
+When doing so, please:
+- Maintain cross-platform compatibility
+- Preserve the existing public contract unless a breaking change is intentional
+- Submit focused pull requests that conform to the existing code style
+- Maintain your branch synchronised with `master`
+- Revise the documentation when functionality changes
+- Properly test all modifications, including edge cases and error conditions
+- Include tests for additional or modified functionality
+- Raise a new [issue](https://github.com/hmlendea/nuciweb.automation.selenium/issues) for problems or suggestions
+
+See the [contributing guidelines](./CONTRIBUTING.md) for details on how to report issues, suggest enhancements, and submit changes.
