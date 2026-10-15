@@ -100,3 +100,7 @@ This project is licensed under the `GNU General Public License v3.0` or later. S
 ## 🛡️ Privacy and Data
 
 See [PRIVACY.md](./PRIVACY.md) for detailed information about how this project handles personal data and privacy practices.
+
+## 📜 Code of Conduct
+
+See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for the standards of conduct expected in all project spaces.
