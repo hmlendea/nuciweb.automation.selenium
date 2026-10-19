@@ -101,6 +101,12 @@ This project is licensed under the `GNU General Public License v3.0` or later. S
 
 See [PRIVACY.md](./PRIVACY.md) for detailed information about how this project handles personal data and privacy practices.
 
+## 🏗️ Architecture
+
+NuciWeb.Automation.Selenium implements a layered abstraction architecture over Selenium WebDriver, separating application code from browser automation details through the `IWebProcessor` interface.
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the system context, principal components, runtime flows, ownership boundaries, dependencies, constraints, and extension points.
+
 ## 📜 Code of Conduct
 
 See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for the standards of conduct expected in all project spaces.
@@ -123,6 +129,6 @@ See the [contributing guidelines](./CONTRIBUTING.md) for details on how to repor
 
 ## 🔒 Security
 
-NuciWeb.Automation.Selenium provides a security policy for reporting and addressing vulnerabilities in its Selenium WebDriver integration.
+NuciWeb.Automation.Selenium follows coordinated disclosure for vulnerabilities in its Selenium WebDriver integration, processor implementation, and WebDriver initialisation logic.
 
 For information on reporting security vulnerabilities, see [SECURITY.md](./SECURITY.md).
