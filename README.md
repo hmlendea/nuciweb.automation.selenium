@@ -120,3 +120,9 @@ When doing so, please:
 - Raise a new [issue](https://github.com/hmlendea/nuciweb.automation.selenium/issues) for problems or suggestions
 
 See the [contributing guidelines](./CONTRIBUTING.md) for details on how to report issues, suggest enhancements, and submit changes.
+
+## 🔒 Security
+
+NuciWeb.Automation.Selenium provides a security policy for reporting and addressing vulnerabilities in its Selenium WebDriver integration.
+
+For information on reporting security vulnerabilities, see [SECURITY.md](./SECURITY.md).
