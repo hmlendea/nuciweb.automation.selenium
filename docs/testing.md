@@ -11,9 +11,9 @@ Documents the test strategy, organisation, and coverage for the NuciWeb.Automati
 ```
         /\
        /  \     E2E Tests (Few)
-      /----\    
+      /----\
      /      \   Integration Tests (Some)
-    /--------\ 
+    /--------\
    /          \ Unit Tests (Many)
   /------------\
 ```
@@ -30,130 +30,59 @@ Documents the test strategy, organisation, and coverage for the NuciWeb.Automati
 
 ### Project Structure
 
-```
-NuciWeb.Automation.Selenium.Tests/
-├── Unit/
-│   ├── SeleniumWebProcessorTests.cs
-│   └── WebDriverInitialiserTests.cs
-├── Integration/
-│   ├── FirefoxIntegrationTests.cs
-│   └── ChromeIntegrationTests.cs
-└── E2E/
-    └── AutomationFlowTests.cs
-```
+The NUnit 4 unit tests are in [NuciWeb.Automation.Selenium.UnitTests](../NuciWeb.Automation.Selenium.UnitTests/). The suite is divided between [SeleniumWebProcessorTests.cs](../NuciWeb.Automation.Selenium.UnitTests/SeleniumWebProcessorTests.cs) and [WebDriverInitialiserTests.cs](../NuciWeb.Automation.Selenium.UnitTests/WebDriverInitialiserTests.cs). Browser integration tests belong in a separate integration-test project and are not part of this unit-test project.
 
 ### Test Naming Convention
 
-```
-[MethodName]_[Scenario]_[ExpectedResult]
+```text
+Given[Context]_When[Action]_Then[ExpectedResult]
 ```
 
 Examples:
-- `Click_ElementExists_ReturnsSuccess`
-- `Click_ElementNotFound_ThrowsNoSuchElementException`
-- `GoToUrl_ValidUrl_NavigatesSuccessfully`
+- `GivenElementExists_WhenClicking_ThenCallsWebDriverClick`
+- `GivenElementCannotBeFound_WhenClicking_ThenThrowsNotFoundException`
+- `GivenDebugModeSetting_WhenInitialisingChrome_ThenConfiguresChrome`
 
 ## Unit Tests
 
 ### SeleniumWebProcessor Tests
 
-```csharp
-[TestClass]
-public class SeleniumWebProcessorTests
-{
-    [TestMethod]
-    public void Click_ElementExists_CallsWebDriverClick()
-    {
-        // Arrange
-        var mockDriver = new Mock<IWebDriver>();
-        var mockElement = new Mock<IWebElement>();
-        mockDriver.Setup(d => d.FindElement(By.XPath("//button"))).Returns(mockElement.Object);
-        
-        var processor = new SeleniumWebProcessor(mockDriver.Object);
-        
-        // Act
-        processor.Click("//button");
-        
-        // Assert
-        mockElement.Verify(e => e.Click(), Times.Once);
-    }
-    
-    [TestMethod]
-    public void DoesElementExist_ElementExists_ReturnsTrue()
-    {
-        // Arrange
-        var mockDriver = new Mock<IWebDriver>();
-        mockDriver.Setup(d => d.FindElements(By.XPath("//div"))).Returns(new List<IWebElement> { new Mock<IWebElement>().Object });
-        
-        var processor = new SeleniumWebProcessor(mockDriver.Object);
-        
-        // Act
-        var result = processor.DoesElementExist("//div");
-        
-        // Assert
-        Assert.IsTrue(result);
-    }
-}
-```
+Tests use Moq to model Selenium drivers, elements, actions, alerts, tabs, and select options. They cover public processor behavior, including retry exhaustion and navigation error handling.
 
 ### WebDriverInitialiser Tests
 
-```csharp
-[TestClass]
-public class WebDriverInitialiserTests
-{
-    [TestMethod]
-    public void InitialiseFirefoxDriver_ValidParameters_ReturnsDriver()
-    {
-        // This test requires geckodriver to be installed
-        // Skip if not available
-        if (!File.Exists("/usr/bin/geckodriver"))
-        {
-            Assert.Inconclusive("geckodriver not installed");
-        }
-        
-        // Act
-        var driver = WebDriverInitialiser.InitialiseFirefoxDriver(false, 90);
-        
-        // Assert
-        Assert.IsNotNull(driver);
-        driver.Quit();
-    }
-}
-```
+The initializer checks call the static API and launch real browser processes. They are marked NUnit `Explicit` and require the matching browser and driver, so the normal unit-test run does not execute them. Browser startup coverage requires running these checks in an environment with the required binaries.
 
 ## Integration Tests
 
 ### Browser Integration Tests
 
 ```csharp
-[TestClass]
+[TestFixture]
 public class FirefoxIntegrationTests
 {
-    private IWebDriver _driver;
-    private IWebProcessor _processor;
-    
-    [TestInitialize]
-    public void Setup()
+    private IWebDriver driver = null!;
+    private IWebProcessor processor = null!;
+
+    [SetUp]
+    public void SetUp()
     {
-        _driver = WebDriverInitialiser.InitialiseFirefoxDriver(true, 30);
-        _processor = new SeleniumWebProcessor(_driver);
+        driver = WebDriverInitialiser.InitialiseFirefoxDriver(true, 30);
+        processor = new SeleniumWebProcessor(driver);
     }
-    
-    [TestCleanup]
-    public void Cleanup()
+
+    [TearDown]
+    public void TearDown()
     {
-        _driver?.Quit();
+        driver?.Quit();
     }
-    
-    [TestMethod]
-    public void GoToUrl_ValidUrl_LoadsPage()
+
+    [Test]
+    public void GivenValidUrl_WhenNavigating_ThenLoadsPage()
     {
-        // Act
-        _processor.GoToUrl("https://example.com");
-        
-        // Assert
-        Assert.IsTrue(_processor.IsElementVisible("//h1"));
+        processor.GoToUrl("https://example.com");
+
+        Assert.That(processor.IsElementVisible("//h1"), Is.EqualTo(true));
     }
 }
 ```
@@ -163,27 +92,27 @@ public class FirefoxIntegrationTests
 ### Automation Flow Tests
 
 ```csharp
-[TestClass]
+[TestFixture]
 public class AutomationFlowTests
 {
-    [TestMethod]
-    public void LoginFlow_ValidCredentials_Succeeds()
+    [Test]
+    public void GivenValidCredentials_WhenLoggingIn_ThenDisplaysWelcome()
     {
-        using var driver = WebDriverInitialiser.InitialiseAvailableWebDriver(true, 60);
-        var processor = new SeleniumWebProcessor(driver);
-        
+        using IWebDriver driver = WebDriverInitialiser.InitialiseAvailableWebDriver(true, 60);
+        SeleniumWebProcessor processor = new(driver);
+
         // Navigate to login
         processor.GoToUrl("https://example.com/login");
-        
+
         // Fill form
         processor.SetText("//input[@name='username']", "testuser");
         processor.SetText("//input[@name='password']", "testpass");
-        
+
         // Submit
         processor.Click("//button[@type='submit']");
-        
+
         // Verify
-        Assert.IsTrue(processor.IsElementVisible("//div[@class='welcome']"));
+        Assert.That(processor.IsElementVisible("//div[@class='welcome']"), Is.EqualTo(true));
     }
 }
 ```
@@ -197,7 +126,7 @@ public class AutomationFlowTests
 dotnet test
 
 # Run specific test project
-dotnet test NuciWeb.Automation.Selenium.Tests/
+dotnet test NuciWeb.Automation.Selenium.UnitTests/
 
 # Run with filter
 dotnet test --filter "FullyQualifiedName~SeleniumWebProcessorTests"
@@ -241,9 +170,10 @@ public class TestFixtures
 
 | Metric | Target |
 |--------|--------|
-| **Line Coverage** | > 80% |
-| **Branch Coverage** | > 70% |
-| **Method Coverage** | > 90% |
+| **Line Coverage** | 100% for `SeleniumWebProcessor` |
+| **Branch Coverage** | 100% for `SeleniumWebProcessor` |
+
+The normal unit-test run does not cover [WebDriverInitialiser.cs](../NuciWeb.Automation.Selenium/WebDriverInitialiser.cs), because its checks launch external browsers.
 
 ## Related Documentation
 

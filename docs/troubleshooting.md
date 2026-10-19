@@ -16,7 +16,7 @@ Documents common issues and their solutions for the NuciWeb.Automation.Selenium 
    ```bash
    # Ubuntu/Debian
    sudo apt install firefox-geckodriver
-   
+
    # Or download from: https://github.com/mozilla/geckodriver/releases
    ```
 
@@ -24,7 +24,7 @@ Documents common issues and their solutions for the NuciWeb.Automation.Selenium 
    ```bash
    # Ubuntu/Debian
    sudo apt install chromium-driver
-   
+
    # Or download from: https://sites.google.com/a/chromium.org/chromedriver/
    ```
 
@@ -61,7 +61,7 @@ Documents common issues and their solutions for the NuciWeb.Automation.Selenium 
    ```bash
    # Ubuntu/Debian
    sudo apt install firefox
-   
+
    # Or download from: https://www.mozilla.org/firefox/
    ```
 
@@ -69,7 +69,7 @@ Documents common issues and their solutions for the NuciWeb.Automation.Selenium 
    ```bash
    # Ubuntu/Debian
    sudo apt install google-chrome-stable
-   
+
    # Or download from: https://www.google.com/chrome/
    ```
 
