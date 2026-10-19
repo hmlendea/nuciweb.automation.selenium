@@ -105,7 +105,7 @@ See [PRIVACY.md](./PRIVACY.md) for detailed information about how this project h
 
 NuciWeb.Automation.Selenium implements a layered abstraction architecture over Selenium WebDriver, separating application code from browser automation details through the `IWebProcessor` interface.
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the system context, principal components, runtime flows, ownership boundaries, dependencies, constraints, and extension points.
+See the [architecture documentation](./ARCHITECTURE.md) for the system context, principal components, runtime flows, ownership boundaries, dependencies, constraints, and extension points.
 
 ## 📜 Code of Conduct
 
