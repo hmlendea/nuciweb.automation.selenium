@@ -3,20 +3,24 @@
 This document describes the current architecture of the NuciWeb.Automation.Selenium library, which provides a Selenium-based implementation for the NuciWeb.Automation abstractions.
 
 ## 📑 Table of Contents
-- [Purpose](#-purpose)
-- [System Context](#-system-context)
-- [Architectural Style](#-architectural-style)
-- [Runtime Flow](#-runtime-flow)
-- [Components](#-components)
-- [Interfaces and Integrations](#-interfaces-and-integrations)
-- [Dependency Direction and Rules](#-dependency-direction-and-rules)
-- [External Dependencies](#-external-dependencies)
-- [Deployment and Operations](#-deployment-and-operations)
-- [Compatibility Contracts](#-compatibility-contracts)
-- [Testing and Verification](#-testing-and-verification)
-- [Design Constraints](#-design-constraints)
-- [Cross-Cutting Concerns](#-cross-cutting-concerns)
-- [Related Documentation](#-related-documentation)
+- [Purpose](#purpose)
+- [System Context](#system-context)
+- [Architectural Style](#architectural-style)
+- [Runtime Flow](#runtime-flow)
+- [Components](#components)
+- [Architectural Areas](#architectural-areas)
+- [Interfaces and Integrations](#interfaces-and-integrations)
+- [Key Flows](#key-flows)
+- [Domain-Specific Concerns](#domain-specific-concerns)
+- [Cross-Cutting Concerns](#cross-cutting-concerns)
+- [Dependency Direction and Rules](#dependency-direction-and-rules)
+- [External Dependencies](#external-dependencies)
+- [Deployment and Operations](#deployment-and-operations)
+- [Compatibility Contracts](#compatibility-contracts)
+- [Testing and Verification](#testing-and-verification)
+- [Design Constraints](#design-constraints)
+- [Extension Points](#extension-points)
+- [Related Documentation](#related-documentation)
 
 ## 🎯 Purpose
 
@@ -103,12 +107,79 @@ The principal runtime sequence is:
 | `WebDriverInitialiser` | Creates configured Firefox or Chrome WebDriver instances | Selenium.WebDriver, Selenium.Support, NuciWeb.HTTP | Static utility - no instantiation needed |
 | `NuciWeb.Automation.IWebProcessor` | Defines the web automation processor abstraction | None (interface) | Abstraction - implemented by SeleniumWebProcessor |
 
+## 🗂️ Architectural Areas
+
+### Core Library
+
+Paths:
+- `NuciWeb.Automation.Selenium/SeleniumWebProcessor.cs`
+- `NuciWeb.Automation.Selenium/WebDriverInitialiser.cs`
+
+Responsibilities:
+- Implements the `IWebProcessor` interface using Selenium WebDriver
+- Provides browser driver initialisation for Firefox and Chrome
+
+Boundary rules:
+- Application code depends only on `NuciWeb.Automation.IWebProcessor`, not on Selenium types directly
+- `SeleniumWebProcessor` depends on Selenium.WebDriver and Selenium.Support
+- `WebDriverInitialiser` depends on Selenium.WebDriver, Selenium.Support, and NuciWeb.HTTP
+
 ## 🔌 Interfaces and Integrations
 
 | Interface or Integration | Direction | Contract | Owner | Failure Semantics |
 |--------------------------|-----------|----------|-------|-------------------|
 | `IWebProcessor` | Inbound | NuciWeb.Automation processor interface | NuciWeb.Automation | Translation of Selenium exceptions to abstraction-level failures |
 | Selenium WebDriver | Outbound | WebDriver protocol via HTTP | Selenium.WebDriver | Retry, fallback, or termination based on command type |
+
+## 🔀 Key Flows
+
+### Browser Navigation
+
+```mermaid
+sequenceDiagram
+    participant App as Application Code
+    participant Lib as NuciWeb.Automation.Selenium
+    participant Web as Selenium WebDriver
+    participant Browser as Firefox/Chrome Browser
+
+    App->>Lib: GoToUrl(url)
+    Lib->>Web: Navigate().GoToUrl(url)
+    Web->>Browser: Load page
+    Browser-->>Web: Return page state
+    Web-->>Lib: Navigation result
+    Lib-->>App: Operation result
+```
+
+Application calls `GoToUrl` through `IWebProcessor`. The processor navigates the WebDriver to the requested URL, retrying on Chromium error pages, and returns once the page loads successfully or throws after exhausting retries.
+
+### Element Interaction
+
+```mermaid
+sequenceDiagram
+    participant App as Application Code
+    participant Lib as NuciWeb.Automation.Selenium
+    participant Web as Selenium WebDriver
+    participant Browser as Firefox/Chrome Browser
+
+    App->>Lib: SetText(xpath, text)
+    Lib->>Lib: Switch to current tab
+    Lib->>Web: FindElement(By.XPath(xpath))
+    Web->>Browser: Locate element
+    Browser-->>Web: Return element reference
+    Web-->>Lib: Return IWebElement
+    Lib->>Web: Clear and SendKeys(text)
+    Lib-->>App: Operation result
+```
+
+Application calls element interaction methods through `IWebProcessor`. The processor switches to the current tab, locates the element by XPath with retry logic, performs the action, and returns the result.
+
+## ⚙️ Browser Automation
+
+The library automates Firefox and Chrome browsers through Selenium WebDriver. Browser selection is determined at runtime by checking for the presence of `geckodriver` at `/usr/bin/geckodriver`. When present, Firefox is used; otherwise Chrome is used. Both drivers are configured with `PageLoadStrategy.None`, a configurable page load timeout, maximized window, and quieter logging. Headless mode is enabled when debug mode is disabled.
+
+## ⚙️ Domain-Specific Concerns
+
+XPath-based element location throughout the processor API. The processor switches to the current tab before resolving elements. Navigation includes retry logic and a basic Chromium error-page check before failing. Headless mode is available only when debug mode is disabled.
 
 ## 🧭 Dependency Direction and Rules
 
@@ -196,6 +267,16 @@ Current trade-offs and deliberate exclusions in the architecture:
 - **Performance:** Prioritises reliability over maximum speed through retry mechanisms and timeouts
 
 These constraints ensure the library remains focused, maintainable, and aligned with its core purpose of providing a clean Selenium abstraction layer.
+
+## 🔧 Extension Points
+
+### Web Processor Implementation
+
+1. Implement or revise the `IWebProcessor` contract in `NuciWeb.Automation`.
+2. Register or integrate the implementation at the composition boundary where `SeleniumWebProcessor` is instantiated.
+3. Add the verification required to preserve neighbouring contracts.
+
+The extension must preserve the `IWebProcessor` interface contract, including method signatures, semantics, and exception behaviour.
 
 ## 🧵 Cross-Cutting Concerns
 
