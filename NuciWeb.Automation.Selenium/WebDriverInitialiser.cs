@@ -17,8 +17,8 @@ namespace NuciWeb.Automation.Selenium
 
         /// <summary>
         /// Initialises a web driver based on the available browser drivers on the system.
-        /// If geckodriver is found, it will initialise a Firefox driver; otherwise,
-        /// it will initialise a Chrome driver.
+        /// If geckodriver is found in a supported location, it will initialise a Firefox driver;
+        /// otherwise, it will initialise a Chrome driver.
         /// The driver will be configured based on the debug mode and page load timeout settings.
         /// </summary>
         /// <param name="isDebugModeEnabled">
@@ -32,14 +32,14 @@ namespace NuciWeb.Automation.Selenium
         /// <returns>
         /// An instance of <see cref="IWebDriver"/> that is configured based on the
         /// available browser drivers and the provided settings.
-        /// If geckodriver is available, a Firefox driver will be returned; otherwise,
-        /// a Chrome driver will be returned.
+        /// If geckodriver is available in a supported location, a Firefox driver will be returned;
+        /// otherwise, a Chrome driver will be returned.
         /// </returns>
         public static IWebDriver InitialiseAvailableWebDriver(
             bool isDebugModeEnabled = true,
             int pageLoadTimeout = 90)
         {
-            if (File.Exists("/usr/bin/geckodriver"))
+            if (File.Exists("/usr/bin/geckodriver") || File.Exists("/snap/bin/geckodriver"))
             {
                 return InitialiseFirefoxDriver(isDebugModeEnabled, pageLoadTimeout);
             }
