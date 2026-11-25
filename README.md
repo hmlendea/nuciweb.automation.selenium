@@ -1,4 +1,4 @@
-[![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/funding) [![Build Status](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml) [![Latest Release](https://img.shields.io/github/v/release/hmlendea/nuciweb.automation.selenium)](https://github.com/hmlendea/nuciweb.automation.selenium/releases/latest)
+[![Donate](https://img.shields.io/badge/-%E2%99%A5%20Donate-%23ff69b4)](https://hmlendea.go.ro/funding) [![Build Status](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/dotnet.yml) [![Security Scan](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/security.yml/badge.svg)](https://github.com/hmlendea/nuciweb.automation.selenium/actions/workflows/security.yml) [![Latest Release](https://img.shields.io/github/v/release/hmlendea/nuciweb.automation.selenium)](https://github.com/hmlendea/nuciweb.automation.selenium/releases/latest)
 
 # NuciWeb.Automation.Selenium
 
@@ -126,6 +126,15 @@ When doing so, please:
 - Raise a new [issue](https://github.com/hmlendea/nuciweb.automation.selenium/issues) for problems or suggestions
 
 See the [contributing guidelines](./CONTRIBUTING.md) for details on how to report issues, suggest enhancements, and submit changes.
+
+## ⚙️ GitHub Actions
+
+| Workflow | Purpose |
+|----------|---------|
+| [Build](./.github/workflows/dotnet.yml) | Restores, builds, and tests the .NET solution on pushes and pull requests to `master`. |
+| [Security Scan](./.github/workflows/security.yml) | Checks vulnerable packages and runs CodeQL analysis on pushes, pull requests, and weekly schedule runs. |
+| [GitHub Release](./.github/workflows/github-release.yml) | Packages the project and uploads the NuGet package to the published GitHub release. |
+| [NuGet.org Release](./.github/workflows/nuget-release.yml) | Publishes the NuGet package to NuGet.org for published releases. |
 
 ## 🔒 Security
 

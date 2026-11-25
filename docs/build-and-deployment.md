@@ -119,31 +119,14 @@ The project uses GitHub Actions for continuous integration:
 
 ## CI/CD Pipeline
 
-### GitHub Actions Workflow
+### GitHub Actions Workflows
 
-The workflow is defined in `.github/workflows/dotnet.yml`:
+The repository defines these workflows under `.github/workflows/`:
 
-```yaml
-# Expected workflow structure
-name: .NET Build and Test
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-      - run: dotnet restore
-      - run: dotnet build --no-restore
-      - run: dotnet test --no-build --verbosity normal
-```
+- `dotnet.yml` restores, builds, and tests the solution on pushes and pull requests to `master`.
+- `security.yml` checks vulnerable NuGet packages and runs C# CodeQL analysis on pushes, pull requests, and weekly schedule runs.
+- `github-release.yml` packages the project and uploads the NuGet package to published GitHub releases.
+- `nuget-release.yml` publishes the NuGet package to NuGet.org for published releases.
 
 ### Build Matrix
 
