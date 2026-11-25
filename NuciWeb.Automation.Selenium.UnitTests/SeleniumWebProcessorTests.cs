@@ -10,7 +10,7 @@ using OpenQA.Selenium.Interactions;
 namespace NuciWeb.Automation.Selenium.UnitTests
 {
     [TestFixture]
-    public class SeleniumWebProcessorTests
+    public sealed class SeleniumWebProcessorTests
     {
         private Mock<IWebDriver> mockDriver = null!;
         private Mock<IWebElement> mockElement = null!;

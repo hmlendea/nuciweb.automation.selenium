@@ -1,10 +1,12 @@
 using System;
 using System.Drawing;
 using System.IO;
-using NuciWeb.HTTP;
+
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+
+using NuciWeb.HTTP;
 
 namespace NuciWeb.Automation.Selenium
 {
@@ -13,7 +15,7 @@ namespace NuciWeb.Automation.Selenium
     /// </summary>
     public sealed class WebDriverInitialiser
     {
-        static readonly Size DefaultBrowserSize = new(1920, 1080);
+        private static readonly Size DefaultBrowserSize = new(1920, 1080);
 
         /// <summary>
         /// Initialises a web driver based on the available browser drivers on the system.
@@ -39,7 +41,8 @@ namespace NuciWeb.Automation.Selenium
             bool isDebugModeEnabled = true,
             int pageLoadTimeout = 90)
         {
-            if (File.Exists("/usr/bin/geckodriver") || File.Exists("/snap/bin/geckodriver"))
+            if (File.Exists("/usr/bin/geckodriver") ||
+                File.Exists("/snap/bin/geckodriver"))
             {
                 return InitialiseFirefoxDriver(isDebugModeEnabled, pageLoadTimeout);
             }
@@ -170,7 +173,7 @@ namespace NuciWeb.Automation.Selenium
             return webDriver;
         }
 
-        static void SetWindowSize(IWebDriver driver)
+        private static void SetWindowSize(IWebDriver driver)
         {
             driver.Manage().Window.Position = new Point(0, 0);
             driver.Manage().Window.Size = DefaultBrowserSize;

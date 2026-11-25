@@ -6,7 +6,7 @@ using OpenQA.Selenium;
 namespace NuciWeb.Automation.Selenium.UnitTests
 {
     [TestFixture]
-    public class WebDriverInitialiserTests
+    public sealed class WebDriverInitialiserTests
     {
         [TestCase(true)]
         [TestCase(false)]
