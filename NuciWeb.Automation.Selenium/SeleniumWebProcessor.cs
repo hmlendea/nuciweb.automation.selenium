@@ -14,8 +14,6 @@ namespace NuciWeb.Automation.Selenium
     /// <param name="driver">The Selenium WebDriver instance used to interact with the web browser.</param>
     public sealed class SeleniumWebProcessor(IWebDriver driver) : WebProcessor, IWebProcessor
     {
-        readonly IWebDriver driver = driver;
-
         protected override bool PerformDoesElementExist(string xpath)
         {
             SwitchToTab(CurrentTab);
@@ -66,7 +64,7 @@ namespace NuciWeb.Automation.Selenium
 
         protected override string PerformExecuteScript(string script)
         {
-            IJavaScriptExecutor scriptExecutor = (IJavaScriptExecutor)driver;
+            IJavaScriptExecutor scriptExecutor = driver as IJavaScriptExecutor;
 
             object result = scriptExecutor.ExecuteScript(script);
 
@@ -94,7 +92,7 @@ namespace NuciWeb.Automation.Selenium
         {
             driver.SwitchTo().Window(driver.WindowHandles[0]);
 
-            // TODO: This is not covered by the retry mechanism
+            // Note: this navigation is not covered by the retry mechanism.
             string newTabScript =
                 "var d=document,a=d.createElement('a');" +
                 "a.target='_blank';a.href='" + url + "';" +
@@ -105,7 +103,7 @@ namespace NuciWeb.Automation.Selenium
 
             IList<string> oldWindowTabs = [.. driver.WindowHandles];
 
-            IJavaScriptExecutor scriptExecutor = (IJavaScriptExecutor)driver;
+            IJavaScriptExecutor scriptExecutor = driver as IJavaScriptExecutor;
             scriptExecutor.ExecuteScript(newTabScript);
 
             IList<string> newWindowTabs = [.. driver.WindowHandles];
@@ -196,7 +194,7 @@ namespace NuciWeb.Automation.Selenium
         protected override void PerformSwitchToTab(string tab)
             => driver.SwitchTo().Window(tab);
 
-        IWebElement GetElement(string xpath)
+        private IWebElement GetElement(string xpath)
         {
             SwitchToTab(CurrentTab);
 
@@ -213,7 +211,10 @@ namespace NuciWeb.Automation.Selenium
                         return element;
                     }
                 }
-                catch { }
+                catch
+                {
+                    continue;
+                }
                 finally
                 {
                     Wait();
@@ -223,9 +224,9 @@ namespace NuciWeb.Automation.Selenium
             throw new NotFoundException($"No element with the `XPath {xpath}` exists!");
         }
 
-        IList<SelectElement> GetSelectElements(string xpath)
+        private IEnumerable<SelectElement> GetSelectElements(string xpath)
         {
-            IList<IWebElement> elements = GetElements(xpath);
+            IEnumerable<IWebElement> elements = GetElements(xpath);
             IList<SelectElement> selectElements = [];
 
             foreach (IWebElement element in elements)
@@ -237,7 +238,7 @@ namespace NuciWeb.Automation.Selenium
             return selectElements;
         }
 
-        ReadOnlyCollection<IWebElement> GetElements(string xpath)
+        private IEnumerable<IWebElement> GetElements(string xpath)
         {
             SwitchToTab(CurrentTab);
 
@@ -254,7 +255,10 @@ namespace NuciWeb.Automation.Selenium
                         return elements;
                     }
                 }
-                catch { }
+                catch
+                {
+                    continue;
+                }
                 finally
                 {
                     Wait();
@@ -264,7 +268,7 @@ namespace NuciWeb.Automation.Selenium
             throw new NotFoundException($"No elements with the `XPath {xpath}` exist!");
         }
 
-        IAlert GetAlert()
+        private IAlert GetAlert()
         {
             SwitchToTab(CurrentTab);
 
@@ -276,7 +280,10 @@ namespace NuciWeb.Automation.Selenium
                 {
                     return driver.SwitchTo().Alert();
                 }
-                catch { }
+                catch
+                {
+                    continue;
+                }
                 finally
                 {
                     Wait();

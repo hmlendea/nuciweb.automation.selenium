@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NuciWeb.Automation.Selenium.ArchitectureTests</RootNamespace>
+    <AssemblyName>NuciWeb.Automation.Selenium.ArchitectureTests</AssemblyName>
+    <Version>1.0.0</Version>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="NUnit" Version="5.0.0"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="TngTech.ArchUnitNET.NUnit" Version="0.13.5"><PrivateAssets>all</PrivateAssets></PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NuciWeb.Automation.Selenium\NuciWeb.Automation.Selenium.csproj" />
+    <ProjectReference Include="..\NuciWeb.Automation.Selenium.UnitTests\NuciWeb.Automation.Selenium.UnitTests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\NuciWeb.Automation.Selenium\NuciWeb.Automation.Selenium.csproj" Link="ProductionProjects\NuciWeb.Automation.Selenium.csproj" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\NuciWeb.Automation.Selenium.UnitTests\NuciWeb.Automation.Selenium.UnitTests.csproj" Link="TestProjects\NuciWeb.Automation.Selenium.UnitTests.csproj" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\NuciWeb.Automation.Selenium.ArchitectureTests\NuciWeb.Automation.Selenium.ArchitectureTests.csproj" Link="TestProjects\NuciWeb.Automation.Selenium.ArchitectureTests.csproj" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\NuciWeb.Automation.Selenium.slnx" Link="Solution\NuciWeb.Automation.Selenium.slnx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="*.cs" />
+  </ItemGroup>
+
+  <Target Name="GenerateArchitecturePaths" BeforeTargets="CoreCompile">
+    <WriteLinesToFile
+      File="$(IntermediateOutputPath)ArchitecturePaths.g.cs"
+      Lines="namespace NuciWeb.Automation.Selenium.ArchitectureTests { internal static class ArchitecturePaths { internal const string ProductionSourceRoot = &quot;$(MSBuildProjectDirectory)/../NuciWeb.Automation.Selenium&quot;%3B } }"
+      Overwrite="true"
+      Encoding="UTF-8" />
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)ArchitecturePaths.g.cs" />
+    </ItemGroup>
+  </Target>
+
+</Project>

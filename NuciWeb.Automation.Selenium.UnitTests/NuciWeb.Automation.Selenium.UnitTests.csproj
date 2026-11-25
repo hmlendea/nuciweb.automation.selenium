@@ -5,6 +5,7 @@
     <RootNamespace>NuciWeb.Automation.Selenium.UnitTests</RootNamespace>
     <IsTestProject>true</IsTestProject>
     <ExcludeFromCodeCoverage>true</ExcludeFromCodeCoverage>
+    <IsPackable>false</IsPackable>
     <ImplicitUsings>disable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
