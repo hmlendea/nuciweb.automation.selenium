@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="NuciWeb.Automation.Selenium/NuciWeb.Automation.Selenium.csproj" />
   <Project Path="NuciWeb.Automation.Selenium.ArchitectureTests/NuciWeb.Automation.Selenium.ArchitectureTests.csproj" />
+  <Project Path="NuciWeb.Automation.Selenium.IntegrationTests/NuciWeb.Automation.Selenium.IntegrationTests.csproj" />
   <Project Path="NuciWeb.Automation.Selenium.UnitTests/NuciWeb.Automation.Selenium.UnitTests.csproj" />
 </Solution>
