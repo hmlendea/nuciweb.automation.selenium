@@ -8,6 +8,7 @@ This document outlines the security policy for the NuciWeb.Automation.Selenium p
 - [Reporting a Vulnerability](#reporting-a-vulnerability)
 - [Scope](#scope)
 - [Disclosure Policy](#disclosure-policy)
+- [Automated Scanning](#automated-scanning)
 - [Safe Harbour](#safe-harbour)
 - [Recognition](#recognition)
 
@@ -49,6 +50,10 @@ This project follows coordinated disclosure:
 2. A remediation plan is prepared and validated.
 3. Public disclosure is published after a fix, mitigation, or agreed risk decision is available.
 4. Credit is attributed in accordance with reporter preference and project policy.
+
+## 🔍 Automated Scanning
+
+The public repository runs `.github/workflows/security.yml` on pushes and pull requests to `master`, and weekly. The workflow checks vulnerable NuGet packages and runs CodeQL analysis for C# after building the solution.
 
 ## 🧾 Safe Harbour
 
